@@ -62,4 +62,4 @@ def clean_data():
 
     df.drop_duplicates(inplace=True)
 
-    return df["sexo"].value_counts()
+    return df
