@@ -7,57 +7,116 @@ correctamente. Tenga en cuenta datos faltantes y duplicados.
 
 """
 
-import re
+# import re
+# from datetime import datetime
+
+# import pandas as pd
+
+
+# def clean_data():
+
+#     df = pd.read_csv("solicitudes_credito.csv", sep=";", index_col=0)
+#     df = df.copy()
+
+#     df.dropna(inplace=True)  # eliminar filas vacias
+
+#     df["sexo"] = df["sexo"].str.lower()
+
+#     df["tipo_de_emprendimiento"] = df["tipo_de_emprendimiento"].str.lower()
+
+#     df["idea_negocio"] = [
+#         str.lower(idea.replace("_", " ").replace("-", " "))
+#         for idea in df["idea_negocio"]
+#     ]
+
+#     df.barrio = [
+#         str.lower(barrio).replace("_", " ").replace("-", " ") for barrio in df.barrio
+#     ]
+
+#     df["barrio"] = [
+#         str.lower(barrio).replace("_", " ").replace("-", " ") for barrio in df["barrio"]
+#     ]
+
+#     df["barrio"] = [
+#         str.lower(fila)
+#         .replace("antonio nari¿o", "antonio nariño")
+#         .replace("bel¿n", "belen")
+#         for fila in df["barrio"]
+#     ]
+
+#     df["comuna_ciudadano"] = df["comuna_ciudadano"].astype(int)
+
+#     df["estrato"] = df["estrato"].astype(int)
+
+#     df["línea_credito"] = [
+#         fila.replace("-", " ").replace("_", " ").replace(". ", ".")
+#         for fila in df["línea_credito"]
+#     ]
+#     df["línea_credito"] = df["línea_credito"].str.lower().str.strip()  ##
+
+#     df["fecha_de_beneficio"] = [
+#         (
+#             datetime.strptime(date, "%d/%m/%Y")
+#             if bool(re.search(r"\d{1,2}/\d{2}/\d{4}", date))
+#             else datetime.strptime(date, "%Y/%m/%d")
+#         )
+#         for date in df["fecha_de_beneficio"]
+#     ]
+
+#     df["monto_del_credito"] = [
+#         int(monto.replace("$ ", "").replace(".00", "").replace(",", ""))
+#         for monto in df["monto_del_credito"]
+#     ]
+#     df["monto_del_credito"] = df["monto_del_credito"].astype(int)  ##
+#     df.drop_duplicates(inplace=True)
+
+#     return df
+
+
 from datetime import datetime
 import pandas as pd
+import re
 
 
 def clean_data():
-
     df = pd.read_csv("solicitudes_credito.csv", sep=";", index_col=0)
-    df = df.copy()
-    df = df.dropna()  # eliminar filas vacias
 
-    df["sexo"] = df["sexo"].str.lower()  # Reemplazar todo por minuscula
+    # Eliminar datos duplicados y faltantes
+    df.dropna(inplace=True)
 
-    df["tipo_de_emprendimiento"] = df["tipo_de_emprendimiento"].str.lower()
+    df.sexo = df.sexo.str.lower()
 
-    df["idea_negocio"] = df["idea_negocio"].str.lower()
+    df.tipo_de_emprendimiento = df.tipo_de_emprendimiento.str.lower()
 
-    df["idea_negocio"] = [
-        fila.replace("-", " ").replace("_", " ") for fila in df["idea_negocio"]
+    df.idea_negocio = [
+        str.lower(idea.replace("_", " ").replace("-", " ")) for idea in df.idea_negocio
     ]
 
-    df["barrio"] = [
-        str.lower(barrio).replace("_", " ").replace("-", " ") for barrio in df["barrio"]
+    df.barrio = [
+        str.lower(barrio).replace("_", " ").replace("-", " ") for barrio in df.barrio
     ]
 
-    df["barrio"] = df["barrio"].str.strip()
+    df.comuna_ciudadano = df.comuna_ciudadano.astype(int)
 
-    df["estrato"] = df["estrato"].astype(int)
+    df.estrato = df.estrato.astype(int)
 
-    df["comuna_ciudadano"] = df["comuna_ciudadano"].astype(int)
-
-    df["monto_del_credito"] = [
-        fila.replace(".00", "").replace("$", "").replace(",", "").replace(".", "")
-        for fila in df["monto_del_credito"]
-    ]
-
-    df["monto_del_credito"] = df["monto_del_credito"].astype(int)
-
-    df["línea_credito"] = df["línea_credito"].str.lower().str.strip()
     df["línea_credito"] = [
-        fila.replace("-", " ").replace("_", " ").replace(". ", ".")
-        for fila in df["línea_credito"]
+        str.lower(linea.strip().replace("-", " ").replace("_", " ").replace(". ", "."))
+        for linea in df["línea_credito"]
     ]
 
-    df["fecha_de_beneficio"] = [
+    df.fecha_de_beneficio = [
         (
             datetime.strptime(date, "%d/%m/%Y")
             if bool(re.search(r"\d{1,2}/\d{2}/\d{4}", date))
             else datetime.strptime(date, "%Y/%m/%d")
         )
-        for date in df["fecha_de_beneficio"]
+        for date in df.fecha_de_beneficio
+    ]
+
+    df.monto_del_credito = [
+        int(monto.replace("$ ", "").replace(".00", "").replace(",", ""))
+        for monto in df.monto_del_credito
     ]
 
     df.drop_duplicates(inplace=True)
